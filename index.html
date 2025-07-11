@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RedBand | Hexio Generators</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      color: red;
+      font-family: "Arial Black", "Segoe UI", sans-serif;
+    }
+
+    .navbar {
+      background-color: #111;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar a {
+      color: red;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .brand {
+      color: red;
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+
+    .card-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 50px;
+    }
+
+    .card {
+      background-color: #111;
+      color: white;
+      text-align: center;
+      width: 220px;
+      height: 220px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      cursor: pointer;
+    }
+
+    .card img {
+      width: 60px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      background-color: #222;
+    }
+
+    .header {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .header h1 {
+      color: white;
+      font-size: 28px;
+    }
+
+    .header p {
+      color: gray;
+      font-size: 14px;
+    }
+
+    #accessModal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #modalContent {
+      background-color: #111;
+      border: 2px solid red;
+      border-radius: 10px;
+      padding: 30px 40px;
+      width: 320px;
+      text-align: center;
+      color: white;
+      font-family: "Arial Black", "Segoe UI", sans-serif;
+    }
+
+    #modalContent h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: red;
+      user-select: none;
+    }
+
+    #accessCodeInput {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      border: 2px solid red;
+      border-radius: 5px;
+      background-color: #000;
+      color: white;
+      outline: none;
+      margin-bottom: 25px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-sizing: border-box;
+    }
+
+    #accessCodeInput::placeholder {
+      color: #aa0000;
+    }
+
+    #submitAccessBtn {
+      width: 100%;
+      padding: 12px 0;
+      background-color: red;
+      border: none;
+      border-radius: 5px;
+      color: black;
+      font-weight: 900;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+
+    #submitAccessBtn:hover {
+      background-color: #cc0000;
+    }
+
+    #modalCloseBtn {
+      margin-top: 15px;
+      background: none;
+      border: none;
+      color: red;
+      font-weight: 900;
+      cursor: pointer;
+      font-size: 14px;
+      user-select: none;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="brand">RedBand</div>
+    <div>
+      <a href="index.html">Home</a>
+    </div>
+  </div>
+
+  <div class="header">
+    <h1>Store Product Price Changer</h1>
+    <p>Enter access code to use a generator</p>
+  </div>
+
+  <div class="card-container">
+    <div class="card" onclick="openModal('sainsburys')">
+      <img src="https://i.postimg.cc/ZqhvrjrF/RB-1.png" alt="barcode" />
+      <b>Sainsbury's</b>
+    </div>
+
+    <div class="card" onclick="openModal('waitrose')">
+      <img src="https://i.postimg.cc/ZqhvrjrF/RB-1.png" alt="barcode" />
+      <b>Waitrose</b>
+    </div>
+
+    <div class="card" onclick="openModal('morrisons')">
+      <img src="https://i.postimg.cc/ZqhvrjrF/RB-1.png" alt="barcode" />
+      <b>Morrisons</b>
+    </div>
+
+    <div class="card" onclick="openModal('tesco')">
+      <img src="https://i.postimg.cc/ZqhvrjrF/RB-1.png" alt="barcode" />
+      <b>Tesco</b>
+    </div>
+  </div>
+
+  <div id="accessModal">
+    <div id="modalContent">
+      <h2>Enter Access Code</h2>
+      <input type="text" id="accessCodeInput" placeholder="Access Code" />
+      <button id="submitAccessBtn">Submit</button>
+      <button id="modalCloseBtn">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    const codes = {
+      "sainsburys": "2855151060502976",
+      "waitrose": "8294192340690643",
+      "morrisons": "6790979814250022",
+      "tesco": "0770047304686159"
+    };
+
+    let currentStore = null;
+
+    function openModal(store) {
+      currentStore = store;
+      document.getElementById('accessCodeInput').value = "";
+      document.getElementById('accessModal').style.display = "flex";
+      document.getElementById('accessCodeInput').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('accessModal').style.display = "none";
+      currentStore = null;
+    }
+
+    document.getElementById('submitAccessBtn').addEventListener('click', () => {
+      const input = document.getElementById('accessCodeInput').value.trim();
+      if (!input) {
+        alert("Please enter the access code.");
+        return;
+      }
+      if (currentStore && input === codes[currentStore]) {
+        sessionStorage.setItem('hasAccess', 'true');
+        window.location.href = currentStore + ".html";
+      } else {
+        alert("Incorrect code. Access denied.");
+      }
+      closeModal();
+    });
+
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+
+    window.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('accessModal')) {
+        closeModal();
+      }
+    });
+
+    document.getElementById('accessCodeInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('submitAccessBtn').click();
+      }
+    });
+  </script>
+</body>
+</html>
